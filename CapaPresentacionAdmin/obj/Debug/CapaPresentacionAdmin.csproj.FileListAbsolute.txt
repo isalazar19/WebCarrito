@@ -170,3 +170,9 @@ D:\Sistemas\WebCarrito\CapaPresentacionAdmin\obj\Debug\CapaPresentacionAdmin.csp
 D:\Sistemas\WebCarrito\CapaPresentacionAdmin\obj\Debug\CapaPresentacionAdmin.csproj.CopyComplete
 D:\Sistemas\WebCarrito\CapaPresentacionAdmin\obj\Debug\CapaPresentacionAdmin.dll
 D:\Sistemas\WebCarrito\CapaPresentacionAdmin\obj\Debug\CapaPresentacionAdmin.pdb
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaEntidad.dll
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaNegocio.dll
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaDatos.dll
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaEntidad.pdb
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaNegocio.pdb
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaDatos.pdb

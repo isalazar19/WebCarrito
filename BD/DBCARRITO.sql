@@ -27,6 +27,7 @@ go
 
 CREATE TABLE PRODUCTO(
 IdProducto int primary key identity,
+Nombre varchar(500),
 Descripcion varchar(500),
 IdMarca int references Marca(IdMarca),
 IdCategoria int references Categoria(IdCategoria),

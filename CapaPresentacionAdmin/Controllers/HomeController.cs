@@ -24,8 +24,8 @@ namespace CapaPresentacionAdmin.Controllers
         {
             List<Usuario> oLista = new List<Usuario>();
             oLista = new CN_Usuarios().Listar();
-            
-            return Json(new { data = oLista },JsonRequestBehavior.AllowGet);
+
+            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -42,6 +42,16 @@ namespace CapaPresentacionAdmin.Controllers
                 resultado = new CN_Usuarios().Editar(objeto, out mensaje);
             }
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+
+        }
+        [HttpPost]
+        public JsonResult EliminarUsuario(int id)
+        {
+            bool respuesta = false;
+            string mensaje = string.Empty;
+
+            respuesta = new CN_Usuarios().Eliminar(id, out mensaje);
+            return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
 
         }
     }

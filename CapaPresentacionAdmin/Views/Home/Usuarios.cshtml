@@ -11,7 +11,8 @@
 
 <div class="card">
     <div class="card-header">
-        <i class="fas fa-users me-1"></i> Lista de Usuarios
+        <i class="fas fa-user
+<a href="~/Views/Home/Usuarios.cshtml">~/Views/Home/Usuarios.cshtml</a>s me-1"></i> Lista de Usuarios
     </div>
     <div class="card-body">
         <div class="row">
@@ -48,7 +49,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input id="txtid" type="text" value="0"/> @*SE ESPECIFICA EL ID*@
+                <input id="txtid" type="hidden" value="0"/> @*SE ESPECIFICA EL ID*@
                 <div class="row g-2">
 
                     <div class="col-sm-6">
@@ -129,7 +130,7 @@
                 },
                 {
                     "defaultContent": '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pen"></i></button>' +
-                        '<button type="button" class="btn btn-danger btn-sm ms-2"><i class="fas fa-trash"></i></button>',
+                        '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fas fa-trash"></i></button>',
                     orderable: false,
                     "searchtable": false,
                     "width": "90px"
@@ -169,6 +170,52 @@
 
             //alert('hola')
         })
+        //Llamado al boton eliminar dentro de la tabla
+        $("#tabla tbody").on("click", '.btn-eliminar', function () {
+            //obtener la fila al presionar el boton editar
+            var usuarioseleccionado = $(this).closest("tr");
+            var data = tabladata.row(usuarioseleccionado).data();
+            swal({
+                title: "Eliminar Registro",
+                //imageUrl: 'thumbs-up.jpg',
+                text: "Desea eliminar el usuario seleccionado?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-primary",
+                confirmButtonText: "Si",
+                cancelButtonText: "No",
+                closeOnConfirm: true
+            },
+                function () {
+                    //debugger;
+                    jQuery.ajax({
+                        url: '@Url.Action("EliminarUsuario", "Home")',
+                        type: "POST",
+                        data: JSON.stringify({ id: data.IdUsuario }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data) {
+                            //console.log(data);
+                            if (data.resultado) {
+                                //procede a eliminar el registro de la tabla
+                                tabladata.row(usuarioseleccionado).remove().draw();
+                            } else {
+                                swal("No se pudo eliminar el usuario", data.mensaje, "error")
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        },
+                        beforeSend: function(){
+
+                        },
+
+                    });
+                });
+
+            console.log(data);
+            //alert('hola')
+        })
 
         function Guardar() {
             //se crea el objeto de usuaio
@@ -191,6 +238,7 @@
                 success: function (data) {
                     //debugger;
                     //console.log(data);
+                    $(".modal-body").LoadingOverlay("hide");
                     //NUEVO USUARIO
                     if (Usuario.IdUsuario == 0) {
                         //alert('crear el usuario')
@@ -220,10 +268,18 @@
                     }
                 },
                 error: function (error) {
-                    console.log(error)
+                    $(".modal-body").LoadingOverlay("hide");
+                    //console.log(error)
+                    $("#mensajeError").text("Error Ajax");
+                    $("#mensajeError").show();
                 },
                 beforeSend: function () {
-
+                    /* fuente donde esta el js https://gasparesganga.com/labs/jquery-loading-overlay/*/
+                    $(".modal-body").LoadingOverlay("show", {
+                        imageResizeFactor: 2,
+                        text: "Guardando...",
+                        size: 14
+                    })
                 },
             });
 

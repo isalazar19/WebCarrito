@@ -1,3 +1,4 @@
+/* ADMIN */
 create proc sp_RegistrarUsuario(
 	@Nombres varchar(100),
 	@Apellidos varchar(100),
@@ -291,4 +292,60 @@ begin
 	from PRODUCTO p
 	inner join MARCA m on m.IdMarca=p.IdMarca
 	inner join CATEGORIA c on c.IdCategoria=p.IdCategoria
+end
+
+
+/* DASHBOARD */
+create procedure sp_ReporteDashboard
+as
+begin
+	SELECT
+	(SELECT COUNT(*) FROM CLIENTE) as TotalCliente,
+	(SELECT ISNULL(SUM(CANTIDAD),0) FROM DETALLE_VENTA) as TotalVenta,
+	(SELECT COUNT(*) FROM PRODUCTO) as TotalProducto
+end
+
+create proc sp_ReporteVentas(
+	@fechainicio varchar(10),
+	@fechafin varchar(10),
+	@idtransaccion varchar(50)
+)
+as
+begin
+	set dateformat dmy;
+	
+	select CONVERT(char(10),v.FechaVenta,105) as FechaVenta,CONCAT(c.Nombres,' ',c.Apellidos) as Cliente,
+	p.Nombre as Producto, p.Precio, dv.Cantidad, dv.Total,v.IdTransaccion
+	from DETALLE_VENTA dv
+	inner join PRODUCTO p on p.IdProducto = dv.IdProducto
+	inner join VENTA v on v.IdVenta = dv.IdVenta
+	inner join CLIENTE c on c.IdCliente = v.IdCliente
+	where CONVERT(date, v.FechaVenta) between @fechainicio and @fechafin
+	and v.IdTransaccion = iif(@idtransaccion = '', v.IdTransaccion,@idtransaccion)
+
+
+end
+
+
+/* CLIENTE */
+CREATE PROCEDURE sp_RegistrarCliente(
+	@Nombres varchar(100),
+	@Apellidos varchar(100),
+	@Correo varchar(100),
+	@Clave varchar(100),
+	@Mensaje varchar(500) output,
+	@Resultado int output
+)
+as
+begin
+	SET @Resultado = 0
+	IF NOT EXISTS (SELECT * FROM CLIENTE WHERE Correo = @Correo)
+	begin
+		insert into CLIENTE(Nombres,Apellidos,Correo,Clave,Reestablecer)
+		values (@Nombres,@Apellidos,@Correo,@Clave,0)
+
+		SET @Resultado = SCOPE_IDENTITY()
+	end
+	else
+		SET @Mensaje = 'El correo del usuario ya existe'
 end

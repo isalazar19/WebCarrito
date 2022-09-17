@@ -176,3 +176,8 @@ D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaDatos.dll
 D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaEntidad.pdb
 D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaNegocio.pdb
 D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\CapaDatos.pdb
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\DocumentFormat.OpenXml.dll
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\ExcelNumberFormat.dll
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\System.IO.Packaging.dll
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\DocumentFormat.OpenXml.xml
+D:\Sistemas\WebCarrito\CapaPresentacionAdmin\bin\ExcelNumberFormat.xml

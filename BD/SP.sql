@@ -349,3 +349,97 @@ begin
 	else
 		SET @Mensaje = 'El correo del usuario ya existe'
 end
+
+/* OPERACIONES DEL CARRITO */
+create proc sp_ExisteCarrito(
+	@IdCliente int,
+	@IdProducto int,
+	@Resultado bit output
+)
+as
+begin
+	if exists(select * from carrito where IdCliente = @IdCliente and IdProducto = @IdProducto)
+		set @Resultado = 1
+	else
+		set @Resultado = 0
+end
+
+create proc sp_OperacionCarrito(
+	@IdCliente int,
+	@IdProducto int,
+	@Sumar bit,
+	@Mensaje varchar(500) output,
+	@Resultado bit output
+)
+as
+begin
+	set @Resultado = 1
+	set @Mensaje = ''
+
+	declare @existecarrito bit = iif(exists(select * from carrito where idcliente = @IdCliente and idproducto = @IdProducto),1,0)
+	declare @stockproducto int= (select stock from PRODUCTO where IdProducto=@IdProducto)
+
+	BEGIN TRY
+		
+		BEGIN TRANSACTION OPERACION
+		
+		if(@Sumar = 1)
+		begin
+			if(@stockproducto > 0)
+			begin
+				if(@existecarrito = 1)
+					UPDATE CARRITO SET Cantidad = Cantidad + 1 WHERE IdCliente=@IdCliente AND IdProducto=@IdProducto
+				else
+					INSERT INTO CARRITO(IdCliente,IdProducto,Cantidad) VALUES(@IdCliente,@IdProducto,1)
+
+				UPDATE PRODUCTO SET Stock = Stock + 1 WHERE IdProducto = @IdProducto
+			end
+			else
+			begin
+				set @Resultado = 0
+				set @Mensaje = 'El producto no cuenta con stock disponible'
+			end
+		end
+		else
+		begin
+			UPDATE CARRITO SET Cantidad = Cantidad - 1 WHERE IdCliente=@IdCliente AND IdProducto=@IdProducto
+			UPDATE PRODUCTO SET Stock = Stock + 1 WHERE IdProducto=@IdProducto
+		end
+
+		COMMIT TRANSACTION OPERACION
+
+	END TRY
+	BEGIN CATCH
+		set @Resultado=0
+		set @Mensaje=ERROR_MESSAGE()
+		ROLLBACK TRANSACTION OPERACION
+	END CATCH
+
+end
+
+/* Eliminar un producto del carrito */
+CREATE PROCEDURE sp_EliminarCarrito(
+	@IdCliente int,
+	@IdProducto int,
+	@Resultado bit output
+)
+as
+begin
+	set @Resultado=1
+	declare @cantidadproducto int = (select Cantidad from CARRITO where IdCliente=@IdCliente and IdProducto=@IdProducto)
+
+	BEGIN TRY
+		BEGIN TRANSACTION OPERACION
+
+		update PRODUCTO set Stock=Stock + @cantidadproducto where IdProducto=@IdProducto
+		delete top (1) from CARRITO where IdCliente=@IdCliente and IdProducto=@IdProducto
+
+		COMMIT TRANSACTION OPERACION
+
+	END TRY
+	BEGIN CATCH
+		set @Resultado=0
+		ROLLBACK TRANSACTION OPERACION
+	END CATCH
+
+end
